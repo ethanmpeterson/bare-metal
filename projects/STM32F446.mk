@@ -1,14 +1,3 @@
-TARGET = main
-SRCS = main.c
-
-LINKER_SCRIPT = ../../linker/STM32F446RETx_FLASH.ld
-
-DEBUG = 1
-
-CDEFS = -D STM32F446xx
-# Enable FPU
-# CDEFS += -D__VFP_FP__
-
 CMSIS = ../../libraries/CMSIS_5
 
 SRCS += ../../includes/STM32F446XX/system_stm32f4xx.c
@@ -19,9 +8,9 @@ OBJS := $(addprefix ,$(notdir $(OBJS:.s=.o)))
 vpath %.c $(sort $(dir $(SRCS)))
 vpath %.s $(sort $(dir $(SRCS)))
 
-INCLUDES += -I ./
-INCLUDES += -I ../../includes/STM32F446XX
-INCLUDES += -I $(CMSIS)/CMSIS/Core/Include
+INCLUDES += -I.
+INCLUDES += -I../../includes
+INCLUDES += -I$(CMSIS)/CMSIS/Core/Include
 
 CFLAGS += $(CDEFS)
 
