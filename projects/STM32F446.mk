@@ -9,7 +9,7 @@ vpath %.c $(sort $(dir $(SRCS)))
 vpath %.s $(sort $(dir $(SRCS)))
 
 INCLUDES += -I.
-INCLUDES += -I../../includes
+INCLUDES += -I../../includes/STM32F446XX
 INCLUDES += -I$(CMSIS)/CMSIS/Core/Include
 
 CFLAGS += $(CDEFS)
