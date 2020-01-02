@@ -99,7 +99,7 @@ debug:
 	 $(TARGET).elf
 
 burn:
-	@st-flash erase
+	@st-info --probe
 	@openocd -f board/st_nucleo_f4.cfg -c "program $(TARGET).elf verify reset exit"
 
 clean:
