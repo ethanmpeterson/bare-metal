@@ -185,6 +185,8 @@ $(BUILD_DIR):
 clean:
 	-rm -fR $(BUILD_DIR)
   
+burn:
+	@st-flash write build/can.bin 0x8000000
 #######################################
 # dependencies
 #######################################
