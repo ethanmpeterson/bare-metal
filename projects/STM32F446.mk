@@ -37,11 +37,11 @@ CFLAGS += --specs=nano.specs
 
 # NOTE: Change this FPU option depending on the specific M4 in use
 #CFLAGS += -mfloat-abi=soft # No FP
-CFLAGS += -mfloat-abi=softfp -mfpu=fpv4-sp-d16 # Soft FP
-#CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 # Hard FP
+# CFLAGS += -mfloat-abi=softfp -mfpu=fpv4-sp-d16 # Soft FP
+CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 # Hard FP
 
-LDFLAGS += -mfloat-abi=softfp -mfpu=fpv4-sp-d16 # Soft FP
-#LDFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 # Hard FP
+# LDFLAGS += -mfloat-abi=softfp -mfpu=fpv4-sp-d16 # Soft FP
+LDFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 # Hard FP
 
 LDFLAGS += -mcpu=cortex-m4 -mthumb # processor setup
 #LDFLAGS += -nostartfiles # no start files are used
