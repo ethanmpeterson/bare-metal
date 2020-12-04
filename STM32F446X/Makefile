@@ -1,10 +1,14 @@
+BUILD_DIR = build
+
 CSOURCES = $(wildcard *.c)
 ASMSOURCES = $(wildcard *.s)
 CPPSOURCES = $(wildcard *.cpp)
 
-COBJECTS = $(patsubst %.c,%.o,$(CSOURCES))
-CPPOBJECTS = $(patsubst %.cpp,%.o,$(CPPSOURCES))
-ASMOBJECTS = $(patsubst %.s,%.o,$(ASMSOURCES))
+COBJECTS = $(patsubst %.c,$(BUILD_DIR)/%.o,$(CSOURCES))
+CPPOBJECTS = $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(CPPSOURCES))
+ASMOBJECTS = $(patsubst %.s,$(BUILD_DIR)/%.o,$(ASMSOURCES))
+
+$(info $(COBJECTS))
 
 CFLAGS += -mcpu=cortex-m4 -mthumb # M4 specific flags
 CFLAGS += -O0 # optimization off
@@ -32,42 +36,21 @@ CC = arm-none-eabi-gcc
 CPP = arm-none-eabi-g++
 LD = arm-none-eabi-ld
 
-fw.bin : firmware
+$(BUILD_DIR)/fw.bin: $(BUILD_DIR)/firmware
 	arm-none-eabi-objcopy -O binary $^ $@
 
-firmware: $(COBJECTS) $(CPPOBJECTS) $(ASMOBJECTS)
+$(BUILD_DIR)/firmware: $(COBJECTS) $(CPPOBJECTS) $(ASMOBJECTS)
 	$(CPP) $(LDFLAGS) $^ -o $@
 	arm-none-eabi-size $@
 
-%.o: %.c
+$(BUILD_DIR)/%.o: %.c
 	$(CC) -c $(CFLAGS) $^ -o $@
 
-%.o: %.cpp
+$(BUILD_DIR)/%.o: %.cpp
 	$(CPP) -c $(CFLAGS) $^ -o $@
 
-%.o: %.s
+$(BUILD_DIR)/%.o: %.s
 	$(CC) -c $(CFLAGS) $^ -o $@
 
 clean:
-	rm *.o
-	rm firmware
-# firmware: main.o startup.o syscalls.o sysmem.o clock.o
-# 	arm-none-eabi-g++ -T link.ld build/main.o build/startup.o build/clock.o build/syscalls.o \
-# 	build/sysmem.o -o build/firmware
-
-# startup.o: startup.s
-# 	arm-none-eabi-gcc -c startup.s -o build/startup.o
-
-# main.o: main.cpp
-# 	arm-none-eabi-g++ -c main.cpp -o build/main.o
-
-# syscalls.o: syscalls.c
-# 	arm-none-eabi-gcc -c syscalls.c -o build/syscalls.o
-
-# sysmem.o: sysmem.c
-# 	arm-none-eabi-gcc -c sysmem.c -o build/sysmem.o
-
-# clock.o: clock.c
-# 	arm-none-eabi-gcc -c clock.c -o build/clock.o
-
-
+	rm build/*
