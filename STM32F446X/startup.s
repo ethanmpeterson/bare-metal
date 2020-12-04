@@ -106,9 +106,15 @@ LoopFillZerobss:
   ldr  r3, = _ebss
   cmp  r2, r3
   bcc  FillZerobss
-
+/* Run code to enable the FPU.*/
+  LDR.W R0, =0xE000ED88
+  LDR R1, [R0]
+  ORR R1, R1, #(0xF << 20)
+  STR R1, [R0]
+  DSB
+  ISB
 /* Call the clock system intitialization function.*/
-  bl  SystemInit   
+   bl  SystemInit   
 /* Call static constructors */
     bl __libc_init_array
 /* Call the application's entry point.*/
