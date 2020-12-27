@@ -43,10 +43,10 @@ CC = arm-none-eabi-gcc
 CPP = arm-none-eabi-g++
 LD = arm-none-eabi-ld
 
-$(BUILD_DIR)/fw.bin: $(BUILD_DIR)/firmware
+$(BUILD_DIR)/fw.bin: $(BUILD_DIR)/firmware.elf
 	arm-none-eabi-objcopy -O binary $^ $@
 
-$(BUILD_DIR)/firmware: $(COBJECTS) $(CPPOBJECTS) $(ASMOBJECTS)
+$(BUILD_DIR)/firmware.elf: $(COBJECTS) $(CPPOBJECTS) $(ASMOBJECTS)
 	$(CPP) $(LDFLAGS) $^ -o $@
 	arm-none-eabi-size $@
 
