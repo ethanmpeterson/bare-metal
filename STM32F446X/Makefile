@@ -1,4 +1,8 @@
 BUILD_DIR = build
+INCLUDES = \
+-Ilibraries/CMSIS/Device/ST/STM32F4xx/Include \
+-Ilibraries/CMSIS/Include
+
 
 CSOURCES = $(wildcard *.c)
 ASMSOURCES = $(wildcard *.s)
@@ -7,8 +11,6 @@ CPPSOURCES = $(wildcard *.cpp)
 COBJECTS = $(patsubst %.c,$(BUILD_DIR)/%.o,$(CSOURCES))
 CPPOBJECTS = $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(CPPSOURCES))
 ASMOBJECTS = $(patsubst %.s,$(BUILD_DIR)/%.o,$(ASMSOURCES))
-
-$(info $(COBJECTS))
 
 CFLAGS += -mcpu=cortex-m4 -mthumb # M4 specific flags
 CFLAGS += -O0 # optimization off
@@ -26,11 +28,16 @@ CFLAGS += -ffunction-sections -fdata-sections
 CFLAGS += --specs=nano.specs
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 # Hard FP
 CFLAGS += -g
+CFLAGS += $(INCLUDES)
+
 
 LDFLAGS += -Wl,--gc-sections
 LDFLAGS += -mcpu=cortex-m4 -mthumb # M4 specific flags
 LDFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 # Hard FP
 LDFLAGS += -T link.ld -lstdc++
+LDFLAGS += -lm
+LDFLAGS += $(INCLUDES)
+
 
 CC = arm-none-eabi-gcc
 CPP = arm-none-eabi-g++

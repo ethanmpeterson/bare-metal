@@ -1,3 +1,4 @@
+#include "stm32f4xx.h"
 #include <memory>
 
 std::unique_ptr<int> a = std::make_unique<int>();
