@@ -6,7 +6,7 @@
 #define LED 1
 
 void delay() {
-    for (volatile long long i = 0; i < 500000; i++);
+    for (volatile long long i = 0; i < 5000000; i++);
 }
 
 std::unique_ptr<int> a = std::make_unique<int>();
