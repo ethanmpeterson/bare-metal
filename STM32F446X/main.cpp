@@ -15,21 +15,16 @@ volatile float fTestVal = 0;
 
 volatile int clockSpeed = SystemCoreClock;
 
+// Configure USART2 which is connected to the blackmagic probe on the PMBoard
 void UART_INIT() {
 	// fck is the peripheral clock
 	// pg 808 in the reference manual has baud rate selection info
-	
-	// General code outline
-	// set baud rate to 115200 baud
-	//	word length to 8 bits
-	// 1 stop bits
-	// no parity
-	// full duplex mode
-	// no hardware flow control
-	// 16 oversampling
-	// one bit sample disable
-	// no init advfeature
-	// SEE HAL INIT EXAMPLES
+
+	// USART2 is on APB1
+	// need to do clock enable of APB1 bus
+	// in APB1 clock enable register, USART 2 enable is bit 17
+	RCC->APB1ENR |= RCC_APB1ENR_USART2EN; // This def is same as 1 << 17
+
 }
 
 int main(void) {
