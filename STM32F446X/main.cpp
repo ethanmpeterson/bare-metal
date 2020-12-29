@@ -1,5 +1,4 @@
 #include "stm32f4xx.h"
-#include <memory>
 
 #define LED_PORT GPIOB
 #define LED_DDR GPIOB
@@ -8,10 +7,6 @@
 void delay() {
     for (volatile long long i = 0; i < 5000000; i++);
 }
-
-std::unique_ptr<int> a = std::make_unique<int>();
-volatile int *b;
-volatile float fTestVal = 0;
 
 // Configure USART2 which is connected to the blackmagic probe on the PMBoard
 void USART2_INIT() {
@@ -35,16 +30,10 @@ void USART2_INIT() {
 	
 	//GPIOA->MODER |= GPIO_MODER_MODER3_1; // same as 1 << 7
 
-	// Now set the baud rate
-	// desired rate is 115200 baud
-	// USART DIV = fck/(8 * baud) = 48.828125
-	// DIV_FRACTION = 8 * 0.828125 = 6.625 -> round it = 7 = 0x7
-	// DIV_MANTISSA = 48 = 0x30
-	// BRR value = 0x307
-	// USART2->BRR = 0x0307; // 115200
-	USART2->BRR = 0x019A;
+	USART2->BRR = 0x019A; // working
 
-	// USART2->BRR = (((uartdiv / 16 ) << 4 ) | ((uartdiv % 16 )));
+
+	// USART2->BRR = 0x197; // working
 	// SET USART enable, transmit enable, receive enable in control register 1
 	USART2->CR1 |= USART_CR1_TE; // only enable transmit for now
 	// USART2->CR1 |= USART_CR1_OVER8;
@@ -56,18 +45,21 @@ void USART_WRITE(int c) {
 	USART2->DR = (c & 0xFF);
 }
 
+int __io_putchar(int ch) {
+	USART_WRITE(ch);
+	return 0;
+}
+
 int main(void) {
 	SystemCoreClockUpdate();
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN; // enable GPIO port B  clock
     LED_PORT->MODER |= LED; // set bit 0 to output
-    LED_PORT->ODR = 1;
-    b = a.get();
+    LED_PORT->ODR = 0;
 	USART2_INIT();
 
 	for(;;) {
+    	LED_PORT->ODR ^= 1;
 		USART_WRITE(65);
 		delay();
-		(*a)++;
-    	fTestVal += 0.01;
 	}
 }
