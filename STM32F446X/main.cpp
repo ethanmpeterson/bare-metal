@@ -30,8 +30,7 @@ void USART2_INIT() {
 	// Mode setting for PA2 in bits 4 and 5. bit 4 should be 0 and bit 5 should be 1
 	GPIOA->MODER |= GPIO_MODER_MODER2_1; // same as 1 << 5
 	// PA3 also needs to be in alternate function mode. set bit 7
-	
-	//GPIOA->MODER |= GPIO_MODER_MODER3_1; // same as 1 << 7
+	GPIOA->MODER |= GPIO_MODER_MODER3_1; // same as 1 << 7
 
 	// The following values are for without over sample
 	// USART2->BRR = 0x019A; // working
@@ -39,6 +38,7 @@ void USART2_INIT() {
 	// uint32_t baud = 115200;
 	// USART2->BRR = ((SystemCoreClock / 4) + baud / 2) / baud;
 	// brVAL = ((SystemCoreClock / 4) + baud / 2) / baud;
+	USART2->BRR = 0x0307;
 
 	// SET USART enable, transmit enable, receive enable in control register 1
 	USART2->CR1 |= USART_CR1_TE; // only enable transmit for now
