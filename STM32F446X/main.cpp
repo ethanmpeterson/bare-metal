@@ -1,4 +1,5 @@
 #include "stm32f4xx.h"
+#include <stdio.h>
 
 #define LED_PORT GPIOB
 #define LED_DDR GPIOB
@@ -7,6 +8,8 @@
 void delay() {
     for (volatile long long i = 0; i < 5000000; i++);
 }
+
+uint32_t brVAL = 0;
 
 // Configure USART2 which is connected to the blackmagic probe on the PMBoard
 void USART2_INIT() {
@@ -30,13 +33,16 @@ void USART2_INIT() {
 	
 	//GPIOA->MODER |= GPIO_MODER_MODER3_1; // same as 1 << 7
 
-	USART2->BRR = 0x019A; // working
-
-
+	// The following values are for without over sample
+	// USART2->BRR = 0x019A; // working
 	// USART2->BRR = 0x197; // working
+	// uint32_t baud = 115200;
+	// USART2->BRR = ((SystemCoreClock / 4) + baud / 2) / baud;
+	// brVAL = ((SystemCoreClock / 4) + baud / 2) / baud;
+
 	// SET USART enable, transmit enable, receive enable in control register 1
 	USART2->CR1 |= USART_CR1_TE; // only enable transmit for now
-	// USART2->CR1 |= USART_CR1_OVER8;
+	USART2->CR1 |= USART_CR1_OVER8;
 	USART2->CR1 |= USART_CR1_UE;
 }
 
@@ -45,7 +51,7 @@ void USART_WRITE(int c) {
 	USART2->DR = (c & 0xFF);
 }
 
-int __io_putchar(int ch) {
+__attribute__((weak)) int __io_putchar(int ch) {
 	USART_WRITE(ch);
 	return 0;
 }
@@ -57,6 +63,7 @@ int main(void) {
     LED_PORT->ODR = 0;
 	USART2_INIT();
 
+	printf("Hello World!\n");
 	for(;;) {
     	LED_PORT->ODR ^= 1;
 		USART_WRITE(65);
