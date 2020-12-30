@@ -66,6 +66,7 @@ void USART_WRITE(int c) {
 	USART2->DR = (c & 0xFF);
 }
 
+// need extern C to avoid name mangling caused by C++ so that syscalls.c calls the correct function
 extern "C" __attribute__((weak)) int __io_putchar(int ch) {
 	USART_WRITE(ch);
 	return 0;
