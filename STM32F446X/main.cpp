@@ -13,10 +13,12 @@ void delay() {
 uint32_t brVAL = 0;
 
 uint32_t makeBRRValue(uint32_t baud) {
-	uint32_t periphClock = SystemCoreClock / 4;
+	uint32_t periphClock = SystemCoreClock / 4; // APB1 bus prescaler is 4
+	// follow formula given in the reference manual and examples on pg 809
 	double usartDiv = (double) periphClock / (8 * baud);
 	uint32_t mantissa = (uint32_t) usartDiv;
 	uint32_t fraction = round(8 * (usartDiv - mantissa));
+	// as per BRR register layout fraction is placed in lowest nibble and the mantissa is the upper bits
 	return (mantissa << 4) | fraction;
 }
 
