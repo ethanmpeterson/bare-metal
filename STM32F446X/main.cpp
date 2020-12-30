@@ -1,5 +1,6 @@
 #include "stm32f4xx.h"
 #include <stdio.h>
+#include <math.h>
 
 #define LED_PORT GPIOB
 #define LED_DDR GPIOB
@@ -10,6 +11,14 @@ void delay() {
 }
 
 uint32_t brVAL = 0;
+
+uint32_t makeBRRValue(uint32_t baud) {
+	uint32_t periphClock = SystemCoreClock / 4;
+	double usartDiv = (double) periphClock / (8 * baud);
+	uint32_t mantissa = (uint32_t) usartDiv;
+	uint32_t fraction = round(8 * (usartDiv - mantissa));
+	return (mantissa << 4) | fraction;
+}
 
 // Configure USART2 which is connected to the blackmagic probe on the PMBoard
 void USART2_INIT() {
@@ -38,7 +47,9 @@ void USART2_INIT() {
 	// uint32_t baud = 115200;
 	// USART2->BRR = ((SystemCoreClock / 4) + baud / 2) / baud;
 	// brVAL = ((SystemCoreClock / 4) + baud / 2) / baud;
-	USART2->BRR = 0x0307;
+	// USART2->BRR = 0x0307; // working for oversample
+	USART2->BRR = makeBRRValue(115200);
+	brVAL = makeBRRValue(115200);
 
 	// SET USART enable, transmit enable, receive enable in control register 1
 	USART2->CR1 |= USART_CR1_TE; // only enable transmit for now
