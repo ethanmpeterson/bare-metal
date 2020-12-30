@@ -66,9 +66,13 @@ void USART_WRITE(int c) {
 	USART2->DR = (c & 0xFF);
 }
 
-__attribute__((weak)) int __io_putchar(int ch) {
+extern "C" __attribute__((weak)) int __io_putchar(int ch) {
 	USART_WRITE(ch);
 	return 0;
+}
+
+extern "C" __attribute__((weak)) int __io_getchar(void) {
+	return 'A';
 }
 
 int main(void) {
@@ -78,10 +82,9 @@ int main(void) {
     LED_PORT->ODR = 0;
 	USART2_INIT();
 
-	printf("Hello World!\n");
 	for(;;) {
     	LED_PORT->ODR ^= 1;
-		USART_WRITE(65);
+		printf("Hello World!\n");
 		delay();
 	}
 }
