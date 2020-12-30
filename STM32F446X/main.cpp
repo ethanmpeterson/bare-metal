@@ -12,9 +12,11 @@ void delay() {
 
 uint32_t brVAL = 0;
 
+// for over sampling
 uint32_t makeBRRValue(uint32_t baud) {
 	uint32_t periphClock = SystemCoreClock / 4; // APB1 bus prescaler is 4
 	// follow formula given in the reference manual and examples on pg 809
+	// formula was re arranged for usart div value
 	double usartDiv = (double) periphClock / (8 * baud);
 	uint32_t mantissa = (uint32_t) usartDiv;
 	uint32_t fraction = round(8 * (usartDiv - mantissa));
@@ -37,7 +39,7 @@ void USART2_INIT() {
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; // same as 1 << 0 (enable bit for GPIOA is in bit 0)
 
 	// set the alternate function reister accordingly to get UART setup on PA2 and PA3
-	GPIOA->AFR[0] = 0x0700; // index 0 for lower 32 bits of AFR register and UART is in bit 7
+	GPIOA->AFR[0] = 0x700; // index 0 for lower 32 bits of AFR register and UART is in bit 7
 	// Mode setting for PA2 in bits 4 and 5. bit 4 should be 0 and bit 5 should be 1
 	GPIOA->MODER |= GPIO_MODER_MODER2_1; // same as 1 << 5
 	// PA3 also needs to be in alternate function mode. set bit 7
