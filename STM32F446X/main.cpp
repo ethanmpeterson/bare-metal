@@ -30,13 +30,14 @@ uint8_t getPeriphPrescaler() {
 }
 
 // for over sampling
-uint32_t makeBRRValue(uint32_t baud) {
+uint16_t makeBRRValue(uint32_t baud) {
 	uint32_t periphClock = SystemCoreClock / getPeriphPrescaler(); // APB1 bus prescaler is 4
 	// follow formula given in the reference manual and examples on pg 809
 	// formula was re arranged for usart div value
 	double usartDiv = (double) periphClock / (8 * baud);
-	uint32_t mantissa = (uint32_t) usartDiv;
-	uint32_t fraction = round(8 * (usartDiv - mantissa));
+	// In computing, the mantissa is the number to the left of the decimal point
+	uint16_t mantissa = (uint32_t) usartDiv;
+	uint16_t fraction = round(8 * (usartDiv - mantissa));
 	// as per BRR register layout fraction is placed in lowest nibble and the mantissa is the upper bits
 	return (mantissa << 4) | fraction;
 }
