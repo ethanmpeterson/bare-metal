@@ -16,8 +16,7 @@ uint32_t brVAL = 0;
 // this is dynamic so that if the STM32F446 is configured at a different system clock we can still infer the UART peripheral clock
 uint8_t getPeriphPrescaler() {
 	// reference manual pg 132
-	uint32_t val = RCC->CFGR & ((1 << 10) | (1 << 11) | (1 << 12));
-	val >>= 10;
+	uint32_t val = (RCC->CFGR & ((1 << 10) | (1 << 11) | (1 << 12))) >> 10;
 	if (val == 0b100) {
 		return 2;
 	} else if (val == 0b101) {
@@ -84,6 +83,10 @@ void USART_WRITE(int c) {
 	USART2->DR = (c & 0xFF);
 }
 
+int USART_READ() {
+	return 'A';
+}
+
 // need extern C to avoid name mangling caused by C++ so that syscalls.c calls the correct function
 extern "C" __attribute__((weak)) int __io_putchar(int ch) {
 	USART_WRITE(ch);
@@ -91,7 +94,7 @@ extern "C" __attribute__((weak)) int __io_putchar(int ch) {
 }
 
 extern "C" __attribute__((weak)) int __io_getchar(void) {
-	return 'A';
+	return USART_READ();	
 }
 
 int main(void) {
