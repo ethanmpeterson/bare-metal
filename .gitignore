@@ -4,4 +4,4 @@
 *.d
 *.lst
 *.map
-PlatformIO/**
+*.clang_complete

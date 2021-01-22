@@ -62,7 +62,7 @@ $(BUILD_DIR)/%.o: %.s
 clean:
 	rm build/*
 
-blackmagic:
+blackmagic: $(BUILD_DIR)/firmware.elf
 	@gdb-multiarch -nx --batch \
   		-ex 'target extended-remote /dev/ttyACM0' \
   		-ex 'monitor swdp_scan' \
@@ -72,5 +72,5 @@ blackmagic:
   		-ex 'kill' \
   		$(BUILD_DIR)/firmware.elf
 
-stlink:
+stlink: $(BUILD_DIR)/firmware.elf
 	@st-flash write $(BUILD_DIR)/fw.bin 0x8000000
